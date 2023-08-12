@@ -1,4 +1,4 @@
-﻿namespace RecordStore.Data
+﻿namespace RecordStore.Data.Enums
 {
     public enum Condition
     {
