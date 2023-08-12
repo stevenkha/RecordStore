@@ -1,4 +1,4 @@
-﻿using RecordStore.Data;
+﻿using RecordStore.Data.Enums;
 using System.ComponentModel.DataAnnotations;
 
 namespace RecordStore.Models
