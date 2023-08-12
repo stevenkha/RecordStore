@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using RecordStore.Data;
+using System.ComponentModel.DataAnnotations;
 
 namespace RecordStore.Models
 {
