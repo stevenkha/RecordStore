@@ -23,7 +23,7 @@ namespace RecordStore.Controllers
         public async Task<IActionResult> Index()
         {
               return _context.Artist != null ? 
-                          View(await _context.Artist.ToListAsync()) :
+                          View(await _context.Artist.Include(a => a.Discography).ToListAsync()) :
                           Problem("Entity set 'RecordStoreContext.Artist'  is null.");
         }
 
