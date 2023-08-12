@@ -15,5 +15,7 @@ namespace RecordStore.Data
         }
 
         public DbSet<Artist> Artist { get; set; } = default!;
+
+        public DbSet<Record> Record { get; set; } = default!;
     }
 }
