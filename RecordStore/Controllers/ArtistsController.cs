@@ -36,6 +36,7 @@ namespace RecordStore.Controllers
             }
 
             var artist = await _context.Artist
+                .Include(a => a.Discography)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (artist == null)
             {

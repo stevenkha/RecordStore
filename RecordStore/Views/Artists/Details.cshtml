@@ -27,6 +27,15 @@
         </dt>
         <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.Bio)
+        </dd>        
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Discography)
+        </dt>
+        <dd class = "col-sm-10">
+            @foreach(var record in Model.Discography)
+            {
+                <p>@record.Title</p>
+            }
         </dd>
     </dl>
 </div>
