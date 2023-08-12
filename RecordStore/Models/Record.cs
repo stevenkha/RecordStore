@@ -2,18 +2,6 @@
 
 namespace RecordStore.Models
 {
-    public enum Condition
-    {
-        Poor,
-        Fair,
-        Good,
-        GoodPlus,
-        VeryGood,
-        VeryGoodPlus,
-        NearMint,
-        Mint
-    }
-
     public class Record
     {
         [Key]
