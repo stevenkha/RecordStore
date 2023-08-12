@@ -1,4 +1,9 @@
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
+using RecordStore.Data;
 var builder = WebApplication.CreateBuilder(args);
+builder.Services.AddDbContext<RecordStoreContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("RecordStoreContext") ?? throw new InvalidOperationException("Connection string 'RecordStoreContext' not found.")));
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
