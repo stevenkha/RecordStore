@@ -16,19 +16,19 @@ namespace RecordStore.Data
                     return; // DB has been seeded
                 }
                 context.Record.AddRange(
-                    new Record
-                    {
-                        Title = "Ride On Time",
-                        ReleaseDate = new DateTime(1980, 9, 19),
-                        Artist = "Tatsuro Yamashita",
-                        Condition = Enums.Condition.VeryGoodPlus
-                    },
                     new Record 
                     {
                         Title = "Timely!!",
                         ReleaseDate = new DateTime(1983, 12, 5),
                         Artist = "Anri",
                         Condition = Enums.Condition.Good
+                    },
+                    new Record
+                    {
+                        Title = "Ride On Time",
+                        ReleaseDate = new DateTime(1980, 9, 19),
+                        Artist = "Tatsuro Yamashita",
+                        Condition = Enums.Condition.VeryGoodPlus
                     }
                 );
 
@@ -49,6 +49,15 @@ namespace RecordStore.Data
                         Discography = new List<Record>()
                     }
                 );
+
+                // initialize each artist discography with corresponding record
+                foreach (var artist in context.Artist )
+                {
+                    foreach (var record in context.Record )
+                    {
+                        artist.Discography.Add( record );
+                    }
+                }
                 context.SaveChanges();
             }
         }
