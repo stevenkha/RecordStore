@@ -1,8 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json.Linq;
-using RecordStore.Models;
+using RecordStore.Data;
+using RecordStore.Data.Enums;
 
-namespace RecordStore.Data
+namespace RecordStore.Models
 {
     public class DbInitializer
     {
@@ -16,19 +17,19 @@ namespace RecordStore.Data
                     return; // DB has been seeded
                 }
                 context.Record.AddRange(
-                    new Record 
+                    new Record
                     {
                         Title = "Timely!!",
                         ReleaseDate = new DateTime(1983, 12, 5),
                         Artist = "Anri",
-                        Condition = Enums.Condition.Good
+                        Condition = Condition.Good
                     },
                     new Record
                     {
                         Title = "Ride On Time",
                         ReleaseDate = new DateTime(1980, 9, 19),
                         Artist = "Tatsuro Yamashita",
-                        Condition = Enums.Condition.VeryGoodPlus
+                        Condition = Condition.VeryGoodPlus
                     }
                 );
 
@@ -51,11 +52,11 @@ namespace RecordStore.Data
                 );
 
                 // initialize each artist discography with corresponding record
-                foreach (var artist in context.Artist )
+                foreach (var artist in context.Artist)
                 {
-                    foreach (var record in context.Record )
+                    foreach (var record in context.Record)
                     {
-                        artist.Discography.Add( record );
+                        artist.Discography.Add(record);
                     }
                 }
                 context.SaveChanges();
