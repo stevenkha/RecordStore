@@ -12,9 +12,13 @@
     <div class="col-md-4">
         <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div id="imagePreview" class="image-preview">
+                <h3>Image Preview:</h3>
+                <img id="previewImage" class="preview-image" src="#" alt="Artist Image Preview" />
+            </div>
             <div class="form-group">
                 <label asp-for="Image" class="control-label"></label>
-                <input asp-for="Image" class="form-control" />
+                <input asp-for="Image" type="file" class="form-control" id="imageFile" accept="image/*" required />
                 <span asp-validation-for="Image" class="text-danger"></span>
             </div>
             <div class="form-group">
