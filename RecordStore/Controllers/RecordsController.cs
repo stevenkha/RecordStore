@@ -78,6 +78,7 @@ namespace RecordStore.Controllers
                 return NotFound();
             }
 
+            // TODO: make artist a dropdown and display available artists
             var @record = await _context.Record
                 .Include(a => a.Artist)
                 .FirstOrDefaultAsync(m => m.Id == id);
