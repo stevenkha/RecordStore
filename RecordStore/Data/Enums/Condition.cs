@@ -2,13 +2,13 @@
 {
     public enum Condition
     {
-        Poor,
-        Fair,
-        Good,
-        GoodPlus,
-        VeryGood,
-        VeryGoodPlus,
-        NearMint,
-        Mint
+        P,
+        F,
+        G,
+        GPlus,
+        VG,
+        VGPlus,
+        NM,
+        M
     }
 }
