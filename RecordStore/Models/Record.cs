@@ -7,12 +7,30 @@ namespace RecordStore.Models
     {
         [Key]
         public int Id { get; set; }
-        public string? Image { get; set; } 
-        public required string Title { get; set; }
+
+        public string? Image { get; set; }
+
+        [Required]
+        public string Title { get; set; } = "";
+
         [DataType(DataType.Date)]
         [Display(Name = "Release Date")]
-        public required DateTime ReleaseDate { get; set; } 
-        public required string Artist { get; set; }
-        public required Condition Condition { get; set; }
+        [Required]
+        public DateTime ReleaseDate { get; set; }
+
+        [Required]
+        public Artist Artist { get; set; }
+
+        [Required]
+        public Condition Condition { get; set; }
+
+        public Record()
+        {
+            Artist = new Artist()
+            {
+                Name = "",
+                Discography = new List<Record>()
+            };
+        }
     }
 }

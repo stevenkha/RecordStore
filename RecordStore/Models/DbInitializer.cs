@@ -17,11 +17,36 @@ namespace RecordStore.Models
                     return; // DB has been seeded
                 }
 
+                var bioJSON = File.ReadAllText("Data/Bios/ArtistBios.json");
+                var bios = JArray.Parse(bioJSON)[0];
+
+                Artist anri = new()
+                {
+                    Name = "Anri",
+                    Bio = bios["Anri"]["Bio"].ToString(),
+                    Discography = new List<Record>()
+                };
+
+                Artist tats = new()
+                {
+                    Name = "Tatsuro Yamashita",
+                    Bio = bios["Tatsuro Yamashita"]["Bio"].ToString(),
+                    Discography = new List<Record>()
+                };
+
+                List<Artist> artists = new()
+                {
+                    anri,
+                    tats
+                };
+
+                context.Artist.AddRange(artists);
+
                 Record timely = new()
                 {
                     Title = "Timely!!",
                     ReleaseDate = new DateTime(1983, 12, 5),
-                    Artist = "Anri",
+                    Artist = anri,
                     Condition = Condition.Good
                 };
 
@@ -29,7 +54,7 @@ namespace RecordStore.Models
                 {
                     Title = "Ride On Time",
                     ReleaseDate = new DateTime(1980, 9, 19),
-                    Artist = "Tatsuro Yamashita",
+                    Artist = tats,
                     Condition = Condition.VeryGoodPlus
                 };
 
@@ -41,30 +66,6 @@ namespace RecordStore.Models
 
                 context.Record.AddRange(records);
 
-                var bioJSON = File.ReadAllText("Data/Bios/ArtistBios.json");
-                var bios = JArray.Parse(bioJSON)[0];
-
-                Artist anri = new()
-                {
-                    Name = "Anri",
-                    Bio = bios["Anri"]["Bio"].ToString(),
-                    Discography = new List<Record> { timely }
-                };
-
-                Artist tats = new()
-                {
-                    Name = "Tatsuro Yamashita",
-                    Bio = bios["Tatsuro Yamashita"]["Bio"].ToString(),
-                    Discography = new List<Record> { RideOnTime }
-                };
-
-                List<Artist> artists = new()
-                {
-                    anri,
-                    tats
-                };
-
-                context.Artist.AddRange(artists);
                 context.SaveChanges();
             }
         }
