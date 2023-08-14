@@ -23,7 +23,9 @@ namespace RecordStore.Controllers
         public async Task<IActionResult> Index()
         {
               return _context.Record != null ? 
-                          View(await _context.Record.ToListAsync()) :
+                          View(await _context.Record
+                          .Include(a => a.Artist)
+                          .ToListAsync()) :
                           Problem("Entity set 'RecordStoreContext.Record'  is null.");
         }
 
@@ -36,6 +38,7 @@ namespace RecordStore.Controllers
             }
 
             var @record = await _context.Record
+                .Include(a => a.Artist)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (@record == null)
             {
@@ -75,7 +78,9 @@ namespace RecordStore.Controllers
                 return NotFound();
             }
 
-            var @record = await _context.Record.FindAsync(id);
+            var @record = await _context.Record
+                .Include(a => a.Artist)
+                .FirstOrDefaultAsync(m => m.Id == id);
             if (@record == null)
             {
                 return NotFound();
@@ -127,6 +132,7 @@ namespace RecordStore.Controllers
             }
 
             var @record = await _context.Record
+                .Include(a => a.Artist)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (@record == null)
             {
