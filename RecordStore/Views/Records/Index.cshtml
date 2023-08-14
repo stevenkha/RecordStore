@@ -46,7 +46,14 @@
                 @Html.DisplayFor(modelItem => item.ReleaseDate)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Condition)
+                @if (item.Condition.ToString().EndsWith("Plus"))
+                {
+                    @item.Condition.ToString().Replace("Plus", "+")
+                }
+                else
+                {
+                    @Html.DisplayFor(modelItem => item.Condition)
+                }
             </td>
             <td>
                 <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
