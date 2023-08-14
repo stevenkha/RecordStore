@@ -6,9 +6,20 @@ namespace RecordStore.Models
     {
         [Key]
         public int Id { get; set; }
+
         public string? Image { get; set; }
-        public required string Name { get; set; }
+
+        [Required]
+        public string Name { get; set; } = "";
+
         public string? Bio { get; set; }
-        public required List<Record> Discography { get; set; }
+
+        [Required]
+        public List<Record> Discography { get; set; }
+
+        public Artist() 
+        {
+            Discography = new List<Record>();
+        }
     }
 }
