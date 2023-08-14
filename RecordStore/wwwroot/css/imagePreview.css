@@ -1,0 +1,9 @@
+﻿.image-preview {
+    display: none;
+    margin-bottom: 10px;
+}
+
+.preview-image {
+    max-width: 250px;
+    max-height: 250px;
+}
