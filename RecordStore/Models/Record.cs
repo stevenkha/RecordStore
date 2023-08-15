@@ -18,6 +18,7 @@ namespace RecordStore.Models
         [Required]
         public DateTime ReleaseDate { get; set; }
 
+        [Display(Name = "Artist")]
         [Required]
         public int ArtistId { get; set; }
 

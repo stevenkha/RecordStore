@@ -22,9 +22,24 @@ namespace RecordStore.Controllers
         // GET: Records
         public async Task<IActionResult> Index()
         {
-              return _context.Record != null ? 
-                          View(await _context.Record.ToListAsync()) :
-                          Problem("Entity set 'RecordStoreContext.Record'  is null.");
+            var records = await _context.Record.ToListAsync();
+
+            foreach (var record in records)
+            {
+                var artist = await _context.Artist.FindAsync(record.ArtistId);
+
+                if (artist != null)
+                {
+                    ViewBag.ArtistName = ViewBag.ArtistName ?? new Dictionary<int, string>();
+                    ViewBag.ArtistName[record.Id] = artist.Name;
+                }
+            }
+
+            return View(records);
+
+            //return _context.Record != null ? 
+            //            View(await _context.Record.ToListAsync()) :
+            //            Problem("Entity set 'RecordStoreContext.Record'  is null.");
         }
 
         // GET: Records/Details/5
