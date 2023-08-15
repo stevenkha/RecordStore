@@ -39,7 +39,14 @@
             @Html.DisplayNameFor(model => model.Condition)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Condition)
+            @if (Model.Condition.ToString().EndsWith("Plus"))
+            {
+                @Model.Condition.ToString().Replace("Plus", "+")
+            }
+            else
+            {
+                @Html.DisplayFor(modelItem => modelItem.Condition)
+            }
         </dd>
     </dl>
     
