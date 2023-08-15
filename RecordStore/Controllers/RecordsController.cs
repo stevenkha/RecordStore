@@ -104,6 +104,14 @@ namespace RecordStore.Controllers
             {
                 return NotFound();
             }
+
+            var artist = await _context.Artist.FindAsync(id);
+            if (artist == null)
+            {
+                return NotFound();
+            }
+
+            @ViewBag.ArtistName = artist.Name;
             return View(@record);
         }
 
