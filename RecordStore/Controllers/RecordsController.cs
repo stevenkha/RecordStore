@@ -79,7 +79,7 @@ namespace RecordStore.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Image,Title,ReleaseDate,Artist,Condition")] Record @record)
+        public async Task<IActionResult> Create([Bind("Id,Image,Title,ReleaseDate,ArtistId,Condition")] Record @record)
         {
             if (ModelState.IsValid)
             {
@@ -105,13 +105,13 @@ namespace RecordStore.Controllers
                 return NotFound();
             }
 
-            var artist = await _context.Artist.FindAsync(record.ArtistId);
-            if (artist == null)
+            var artists = await _context.Artist.ToListAsync();
+            if (artists == null)
             {
                 return NotFound();
             }
 
-            ViewBag.ArtistName = artist.Name;
+            ViewBag.Artists = artists;
             return View(@record);
         }
 
@@ -120,7 +120,7 @@ namespace RecordStore.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Image,Title,ReleaseDate,Artist,Condition")] Record @record)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Image,Title,ReleaseDate,ArtistId,Condition")] Record @record)
         {
             // TODO: Validate Artist input
             if (id != @record.Id)
@@ -132,25 +132,7 @@ namespace RecordStore.Controllers
             {
                 try
                 {
-                    var existingRecord = await _context.Record.FindAsync(id);
-                    if (existingRecord == null)
-                    {
-                        return NotFound();
-                    }
-
-                    var existingArtist = await _context.Artist.FindAsync(existingRecord.ArtistId);
-                    if (existingArtist == null)
-                    {
-                        return NotFound(nameof(existingRecord.ArtistId));
-                    }
-
-                    existingRecord.Image = record.Image;
-                    existingRecord.Title = record.Title;
-                    existingRecord.ReleaseDate = record.ReleaseDate;
-                    existingRecord.Condition = record.Condition;
-
-                    existingArtist.Name = record.ArtistId.ToString();
-                    
+                    _context.Update(@record);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)

@@ -29,8 +29,13 @@
                 <span asp-validation-for="ReleaseDate" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label class="control-label">Artist</label>
-                <input value="@ViewBag.ArtistName" class="form-control" />
+                <label asp-for="ArtistId" class="control-label">Artist</label>
+                <select asp-for="ArtistId" class="form-control">
+                    @foreach (var artist in ViewBag.Artists)
+                    {
+                        <option value="@artist.Id" selected="@(artist.Id == Model.ArtistId)">@artist.Name</option>
+                    }
+                </select>
             </div>
             <div class="form-group">
                 <label asp-for="Condition" class="control-label"></label>
