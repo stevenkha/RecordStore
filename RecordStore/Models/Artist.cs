@@ -15,11 +15,6 @@ namespace RecordStore.Models
         public string? Bio { get; set; }
 
         [Required]
-        public List<Record> Discography { get; set; }
-
-        public Artist() 
-        {
-            Discography = new List<Record>();
-        }
+        public List<Record> Discography { get; set; } = new List<Record>();
     }
 }

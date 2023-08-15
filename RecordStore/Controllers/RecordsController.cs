@@ -23,9 +23,7 @@ namespace RecordStore.Controllers
         public async Task<IActionResult> Index()
         {
               return _context.Record != null ? 
-                          View(await _context.Record
-                          .Include(a => a.Artist)
-                          .ToListAsync()) :
+                          View(await _context.Record.ToListAsync()) :
                           Problem("Entity set 'RecordStoreContext.Record'  is null.");
         }
 
@@ -37,9 +35,7 @@ namespace RecordStore.Controllers
                 return NotFound();
             }
 
-            var @record = await _context.Record
-                .Include(a => a.Artist)
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var @record = await _context.Record.FirstOrDefaultAsync(m => m.Id == id);
             if (@record == null)
             {
                 return NotFound();
@@ -79,9 +75,7 @@ namespace RecordStore.Controllers
             }
 
             // TODO: make artist a dropdown and display available artists
-            var @record = await _context.Record
-                .Include(a => a.Artist)
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var @record = await _context.Record.FirstOrDefaultAsync(m => m.Id == id);
             if (@record == null)
             {
                 return NotFound();
@@ -132,9 +126,7 @@ namespace RecordStore.Controllers
                 return NotFound();
             }
 
-            var @record = await _context.Record
-                .Include(a => a.Artist)
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var @record = await _context.Record.FirstOrDefaultAsync(m => m.Id == id);
             if (@record == null)
             {
                 return NotFound();

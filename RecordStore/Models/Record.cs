@@ -19,18 +19,9 @@ namespace RecordStore.Models
         public DateTime ReleaseDate { get; set; }
 
         [Required]
-        public Artist Artist { get; set; }
+        public string Artist { get; set; } = "";
 
         [Required]
         public Condition Condition { get; set; }
-
-        public Record()
-        {
-            Artist = new Artist()
-            {
-                Name = "",
-                Discography = new List<Record>()
-            };
-        }
     }
 }
