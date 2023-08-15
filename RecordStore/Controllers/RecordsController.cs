@@ -122,6 +122,7 @@ namespace RecordStore.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Image,Title,ReleaseDate,Artist,Condition")] Record @record)
         {
+            // TODO: Validate Artist input
             if (id != @record.Id)
             {
                 return NotFound();
