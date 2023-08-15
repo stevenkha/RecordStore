@@ -132,7 +132,25 @@ namespace RecordStore.Controllers
             {
                 try
                 {
-                    _context.Update(@record);
+                    var existingRecord = await _context.Record.FindAsync(id);
+                    if (existingRecord == null)
+                    {
+                        return NotFound();
+                    }
+
+                    var existingArtist = await _context.Artist.FindAsync(existingRecord.ArtistId);
+                    if (existingArtist == null)
+                    {
+                        return NotFound(nameof(existingRecord.ArtistId));
+                    }
+
+                    existingRecord.Image = record.Image;
+                    existingRecord.Title = record.Title;
+                    existingRecord.ReleaseDate = record.ReleaseDate;
+                    existingRecord.Condition = record.Condition;
+
+                    existingArtist.Name = record.ArtistId.ToString();
+                    
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
