@@ -58,7 +58,7 @@ namespace RecordStore.Controllers
                 return NotFound();
             }
 
-            var artist = await _context.Artist.FindAsync(id);
+            var artist = await _context.Artist.FindAsync(record.ArtistId);
             if (artist == null)
             {
                 return NotFound();
@@ -105,7 +105,7 @@ namespace RecordStore.Controllers
                 return NotFound();
             }
 
-            var artist = await _context.Artist.FindAsync(id);
+            var artist = await _context.Artist.FindAsync(record.ArtistId);
             if (artist == null)
             {
                 return NotFound();
@@ -165,7 +165,7 @@ namespace RecordStore.Controllers
                 return NotFound();
             }
 
-            var artist = await _context.Artist.FindAsync(id);
+            var artist = await _context.Artist.FindAsync(record.ArtistId);
             if (artist == null)
             {
                 return NotFound(nameof(Artist));
