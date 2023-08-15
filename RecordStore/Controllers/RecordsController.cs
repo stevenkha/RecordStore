@@ -36,16 +36,12 @@ namespace RecordStore.Controllers
 
                 if (artist != null)
                 {
-                    ViewBag.ArtistName = ViewBag.ArtistName ?? new Dictionary<int, string>();
-                    ViewBag.ArtistName[record.Id] = artist.Name;
+                    @ViewBag.ArtistName = @ViewBag.ArtistName ?? new Dictionary<int, string>();
+                    @ViewBag.ArtistName[record.Id] = artist.Name;
                 }
             }
 
             return View(records);
-
-            //return _context.Record != null ? 
-            //            View(await _context.Record.ToListAsync()) :
-            //            Problem("Entity set 'RecordStoreContext.Record'  is null.");
         }
 
         // GET: Records/Details/5
@@ -62,6 +58,13 @@ namespace RecordStore.Controllers
                 return NotFound();
             }
 
+            var artist = await _context.Artist.FindAsync(id);
+            if (artist == null)
+            {
+                return NotFound();
+            }
+
+            @ViewBag.ArtistName = artist.Name;
             return View(@record);
         }
 
