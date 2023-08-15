@@ -46,7 +46,7 @@ namespace RecordStore.Models
                 {
                     Title = "Timely!!",
                     ReleaseDate = new DateTime(1983, 12, 5),
-                    Artist = anri.Name,
+                    ArtistId = anri.Id,
                     Condition = Condition.G
                 };
 
@@ -54,7 +54,7 @@ namespace RecordStore.Models
                 {
                     Title = "Ride On Time",
                     ReleaseDate = new DateTime(1980, 9, 19),
-                    Artist = tats.Name,
+                    ArtistId = tats.Id,
                     Condition = Condition.VGPlus
                 };
 

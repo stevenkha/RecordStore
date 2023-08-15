@@ -19,7 +19,7 @@ namespace RecordStore.Models
         public DateTime ReleaseDate { get; set; }
 
         [Required]
-        public string Artist { get; set; } = "";
+        public int ArtistId { get; set; }
 
         [Required]
         public Condition Condition { get; set; }
