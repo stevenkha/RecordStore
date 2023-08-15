@@ -36,8 +36,8 @@ namespace RecordStore.Controllers
 
                 if (artist != null)
                 {
-                    @ViewBag.ArtistName = @ViewBag.ArtistName ?? new Dictionary<int, string>();
-                    @ViewBag.ArtistName[record.Id] = artist.Name;
+                    ViewBag.ArtistName = ViewBag.ArtistName ?? new Dictionary<int, string>();
+                    ViewBag.ArtistName[record.Id] = artist.Name;
                 }
             }
 
@@ -64,7 +64,7 @@ namespace RecordStore.Controllers
                 return NotFound();
             }
 
-            @ViewBag.ArtistName = artist.Name;
+            ViewBag.ArtistName = artist.Name;
             return View(@record);
         }
 
@@ -111,7 +111,7 @@ namespace RecordStore.Controllers
                 return NotFound();
             }
 
-            @ViewBag.ArtistName = artist.Name;
+            ViewBag.ArtistName = artist.Name;
             return View(@record);
         }
 
@@ -164,6 +164,14 @@ namespace RecordStore.Controllers
             {
                 return NotFound();
             }
+
+            var artist = await _context.Artist.FindAsync(id);
+            if (artist == null)
+            {
+                return NotFound(nameof(Artist));
+            }
+
+            ViewBag.ArtistName = artist.Name;
 
             return View(@record);
         }
