@@ -22,6 +22,12 @@ namespace RecordStore.Controllers
         // GET: Records
         public async Task<IActionResult> Index()
         {
+
+            if (_context.Record == null)
+            {
+                return Problem("Entity set 'RecordStoreContext.Record' is null.");
+            }
+
             var records = await _context.Record.ToListAsync();
 
             foreach (var record in records)
