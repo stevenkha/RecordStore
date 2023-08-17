@@ -9,60 +9,41 @@
 <p>
     <a asp-action="Create">Create New</a>
 </p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Image)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Title)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.ArtistId)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.ReleaseDate)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Condition)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-    @foreach (var item in Model) 
-    {
-        <tr>
-            <td class="align-middle">
-                <img src="@item.Image" alt="@item.Title" style="max-width: 150px">
-            </td>
-            <td class ="align-middle">
-                @Html.DisplayFor(modelItem => item.Title)
-            </td>
-            <td class="align-middle">
-                @ViewBag.ArtistName[item.Id]
-            </td>
-            <td class="align-middle">
-                @Html.DisplayFor(modelItem => item.ReleaseDate)
-            </td>
-            <td class="align-middle">
-                @if (item.Condition.ToString().EndsWith("Plus"))
-                {
-                    @item.Condition.ToString().Replace("Plus", "+")
-                }
-                else
-                {
-                    @Html.DisplayFor(modelItem => item.Condition)
-                }
-            </td>
-            <td class="align-middle right-align-cell">
-                <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-outline-primary btn-spacing"><i class="bi bi-pencil-square"></i> Edit</a>
-                <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-outline-info btn-spacing"><i class="bi bi-eye"></i> Details</a>
-                <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger btn-spacing"><i class="bi bi-trash"></i> Delete</a>
-            </td>
-        </tr>
-    }
-    </tbody>
-</table>
+@foreach (var item in Model)
+{
+    <div class="col-md-6 col-xs-8 border-primary mb-3">
+        <div class="card mb-3" style="max-width: 540px;">
+            <div class="row g-0">
+                <div class="col-md-6">
+                    <img src="@item.Image" width="100%" alt="@item.Title">
+                </div>
+                <div class="col-md-6">
+                    <div class="card-body">
+                        <p class="card-text"><b>Title: </b>@item.Title</p>
+                        <p class="card-text"><b>Release Date: </b>@item.ReleaseDate.ToString("yyyy-MM-dd")</p>
+                        <p class="card-text"><b>Artist: </b>@ViewBag.ArtistName[item.Id]</p>
+                        <p class="card-text">
+                            <b>Condition: </b>
+                            @if (item.Condition.ToString().EndsWith("Plus"))
+                            {
+                                @item.Condition.ToString().Replace("Plus", "+")
+                            }
+                            else
+                            {
+                                @item.Condition
+                            }
+                        </p>
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <div class="card-footer ">
+                        <p class="card-text">
+                            <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-outline-primary float-right"><i class="bi bi-eye-fill"></i> Details</a>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
 <link rel="stylesheet" type="text/css" href="~/css/indexPage.css" />
