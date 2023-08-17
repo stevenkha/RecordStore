@@ -25,7 +25,8 @@
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
+    @foreach (var item in Model) 
+    {
         <tr>
             <td class="align-middle">
                 <img class="rounded-circle" src="@item.Image" alt="@item.Name" style="max-width: 150px">
@@ -39,12 +40,23 @@
                     @Html.DisplayFor(modelItem => record.Title)
                 }
             </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-outline-primary"><i class="bi bi-pencil-square"></i> Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-outline-info"><i class="bi bi-eye"></i> Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger"><i class="bi bi-trash"></i> Delete</a>
+            <td class="align-middle right-align-cell">
+                <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-outline-primary btn-spacing"><i class="bi bi-pencil-square"></i> Edit</a>
+                <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-outline-info btn-spacing"><i class="bi bi-eye"></i> Details</a>
+                <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger btn-spacing"><i class="bi bi-trash"></i> Delete</a>
             </td>
         </tr>
-}
+    }
     </tbody>
 </table>
+<style>
+    .btn-spacing {
+        margin-right: 10px;
+    }
+
+    .right-align-cell {
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+    }
+</style>
