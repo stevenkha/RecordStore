@@ -1,0 +1,6 @@
+﻿@model RecordStore.ViewModels.ArtistDropdownViewModel
+
+@foreach (var artist in Model.Artists)
+{
+    <option value="@artist.Id">@artist.Name</option>
+}
