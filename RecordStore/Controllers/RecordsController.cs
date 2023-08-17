@@ -99,19 +99,12 @@ namespace RecordStore.Controllers
             }
 
             // TODO: make artist a dropdown and display available artists
-            var @record = await _context.Record.FirstOrDefaultAsync(m => m.Id == id);
+            var @record = await _context.Record.FindAsync(id);
             if (@record == null)
             {
                 return NotFound();
             }
 
-            var artists = await _context.Artist.ToListAsync();
-            if (artists == null)
-            {
-                return NotFound();
-            }
-
-            ViewBag.Artists = artists;
             return View(@record);
         }
 
