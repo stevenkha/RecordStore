@@ -1,0 +1,9 @@
+﻿.btn-spacing {
+    margin-right: 10px;
+}
+
+.right-align-cell {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+}
