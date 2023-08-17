@@ -69,8 +69,15 @@ namespace RecordStore.Controllers
         }
 
         // GET: Records/Create
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
+            var artists = await _context.Artist.ToListAsync();
+            if (artists == null)
+            {
+                return NotFound();
+            }
+
+            ViewBag.Artists = artists;
             return View();
         }
 
