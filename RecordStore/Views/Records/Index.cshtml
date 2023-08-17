@@ -33,19 +33,19 @@
     <tbody>
 @foreach (var item in Model) {
         <tr>
-            <td>
+            <td class="align-middle">
                 @Html.DisplayFor(modelItem => item.Image)
             </td>
-            <td>
+            <td class ="align-middle">
                 @Html.DisplayFor(modelItem => item.Title)
             </td>
-            <td>
+            <td class="align-middle">
                 @ViewBag.ArtistName[item.Id]
             </td>
-            <td>
+            <td class="align-middle">
                 @Html.DisplayFor(modelItem => item.ReleaseDate)
             </td>
-            <td>
+            <td class="align-middle">
                 @if (item.Condition.ToString().EndsWith("Plus"))
                 {
                     @item.Condition.ToString().Replace("Plus", "+")
@@ -55,7 +55,7 @@
                     @Html.DisplayFor(modelItem => item.Condition)
                 }
             </td>
-            <td>
+            <td class="align-middle">
                     <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-outline-primary">Edit</a> |
                     <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-outline-info">Details</a> |
                     <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger">Delete</a>

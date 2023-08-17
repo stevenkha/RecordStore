@@ -27,13 +27,13 @@
     <tbody>
 @foreach (var item in Model) {
         <tr>
-            <td>
+            <td class="align-middle">
                 <img class="rounded-circle" src="@item.Image" alt="@item.Name" style="max-width: 150px">
             </td>
-            <td>
+            <td class="align-middle">
                 @Html.DisplayFor(modelItem => item.Name)
             </td>
-            <td>
+            <td class="align-middle">
                 @foreach(var record in item.Discography)
                 {
                     @Html.DisplayFor(modelItem => record.Title)
