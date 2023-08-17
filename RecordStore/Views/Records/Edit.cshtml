@@ -31,7 +31,7 @@
             <div class="form-group">
                 <label asp-for="ArtistId" class="control-label">Artist</label>
                 <select asp-for="ArtistId" class="form-control">
-                    @await Component.InvokeAsync("ArtistDropdown")
+                    @await Component.InvokeAsync("ArtistDropdown", Model.ArtistId)
                 </select>
             </div>
             <div class="form-group">

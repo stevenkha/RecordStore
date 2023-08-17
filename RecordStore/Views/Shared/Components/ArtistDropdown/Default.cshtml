@@ -1,6 +1,11 @@
 ﻿@model RecordStore.ViewModels.ArtistDropdownViewModel
 
+@if (Model.SelectedArtistId == null)
+{
+    <option value="">Select An Artist</option>
+}
+
 @foreach (var artist in Model.Artists)
 {
-    <option value="@artist.Id">@artist.Name</option>
+    <option value="@artist.Id" selected="@(artist.Id == Model.SelectedArtistId)">@artist.Name</option>
 }

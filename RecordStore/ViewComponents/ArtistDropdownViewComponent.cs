@@ -14,11 +14,12 @@ namespace RecordStore.Views.Shared.Components
             _context = context;
         }
 
-        public async Task<IViewComponentResult> InvokeAsync()
+        public async Task<IViewComponentResult> InvokeAsync(int? selectedArtistId = null)
         {
             var artists = await _context.Artist.ToListAsync();
             var viewModel = new ArtistDropdownViewModel
             {
+                SelectedArtistId = selectedArtistId,
                 Artists = artists
             };
 
