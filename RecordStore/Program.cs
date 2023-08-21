@@ -1,11 +1,13 @@
+using Azure.Storage.Blobs;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
 using RecordStore.Data;
 using RecordStore.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<RecordStoreContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("RecordStoreContext") ?? throw new InvalidOperationException("Connection string 'RecordStoreContext' not found.")));
+
+builder.Services.AddSingleton(_ => new BlobServiceClient(builder.Configuration.GetConnectionString("AzureBlobConnectionString")));
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();

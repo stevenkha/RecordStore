@@ -1,9 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using Azure.Storage;
+using Azure.Storage.Blobs;
+using Azure.Storage.Sas;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using RecordStore.Data;
 using RecordStore.Models;
@@ -13,10 +11,12 @@ namespace RecordStore.Controllers
     public class RecordsController : Controller
     {
         private readonly RecordStoreContext _context;
+        private readonly BlobServiceClient _serviceClient;
 
-        public RecordsController(RecordStoreContext context)
+        public RecordsController(RecordStoreContext context, BlobServiceClient serviceClient)
         {
             _context = context;
+            _serviceClient = serviceClient;
         }
 
         // GET: Records
@@ -83,6 +83,32 @@ namespace RecordStore.Controllers
         {
             if (ModelState.IsValid)
             {
+                BlobContainerClient containerClient = _serviceClient.GetBlobContainerClient("recordimages");
+
+                var fileName = Guid.NewGuid().ToString() + Path.GetExtension(@record.Image.FileName);
+                BlobClient blobClient = containerClient.GetBlobClient(fileName);
+                BlobSasBuilder sasBuilder = new()
+                {
+                    BlobContainerName = containerClient.Name,
+                    BlobName = blobClient.Name,
+                    Resource = "b", // "b" indicates a blob
+                    StartsOn = DateTimeOffset.UtcNow,
+                    ExpiresOn = DateTimeOffset.UtcNow.AddHours(1),
+                };
+
+                sasBuilder.SetPermissions(BlobSasPermissions.Read); // Set the desired permissions
+
+                string sasToken = sasBuilder.ToSasQueryParameters(new StorageSharedKeyCredential("recordstore", "eWAn91JgyRBNrts1zz6qqIz+Kn7E+njjRnUxzRag86RBnIj/Je8eRiEHYnhckd1EOKUirvMjYfet+ASt6Pbh7g==")).ToString();
+
+                // Construct SAS URL
+                string sasUrl = $"{blobClient.Uri}?{sasToken}";
+                record.ImagePath = sasUrl;
+
+                using (var stream = @record.Image.OpenReadStream())
+                {
+                    await blobClient.UploadAsync(stream, true);
+                }
+
                 _context.Add(@record);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
