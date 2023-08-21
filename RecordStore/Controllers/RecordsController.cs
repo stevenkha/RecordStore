@@ -98,7 +98,7 @@ namespace RecordStore.Controllers
 
                 sasBuilder.SetPermissions(BlobSasPermissions.Read); // Set the desired permissions
 
-                string sasToken = sasBuilder.ToSasQueryParameters(new StorageSharedKeyCredential("recordstore", "eWAn91JgyRBNrts1zz6qqIz+Kn7E+njjRnUxzRag86RBnIj/Je8eRiEHYnhckd1EOKUirvMjYfet+ASt6Pbh7g==")).ToString();
+                string sasToken = sasBuilder.ToSasQueryParameters(new StorageSharedKeyCredential("recordstore", "")).ToString();
 
                 // Construct SAS URL
                 string sasUrl = $"{blobClient.Uri}?{sasToken}";
