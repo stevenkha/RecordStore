@@ -11,12 +11,12 @@ namespace RecordStore.Controllers
     public class RecordsController : Controller
     {
         private readonly RecordStoreContext _context;
-        private readonly BlobServiceClient _serviceClient;
+        private readonly IConfiguration _configuration;
 
-        public RecordsController(RecordStoreContext context, BlobServiceClient serviceClient)
+        public RecordsController(RecordStoreContext context, IConfiguration configuration)
         {
             _context = context;
-            _serviceClient = serviceClient;
+            _configuration = configuration;
         }
 
         // GET: Records
@@ -83,7 +83,8 @@ namespace RecordStore.Controllers
         {
             if (ModelState.IsValid)
             {
-                BlobContainerClient containerClient = _serviceClient.GetBlobContainerClient("recordimages");
+                BlobServiceClient serviceClient = new(_configuration["AzureConnectionString"]);
+                BlobContainerClient containerClient = serviceClient.GetBlobContainerClient("recordimages");
 
                 var fileName = Guid.NewGuid().ToString() + Path.GetExtension(@record.Image.FileName);
                 BlobClient blobClient = containerClient.GetBlobClient(fileName);
@@ -98,7 +99,7 @@ namespace RecordStore.Controllers
 
                 sasBuilder.SetPermissions(BlobSasPermissions.Read); // Set the desired permissions
 
-                string sasToken = sasBuilder.ToSasQueryParameters(new StorageSharedKeyCredential("recordstore", "")).ToString();
+                string sasToken = sasBuilder.ToSasQueryParameters(new StorageSharedKeyCredential("recordstore", _configuration["AzureKey"])).ToString();
 
                 // Construct SAS URL
                 string sasUrl = $"{blobClient.Uri}?{sasToken}";
