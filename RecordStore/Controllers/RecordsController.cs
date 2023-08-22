@@ -13,6 +13,24 @@ namespace RecordStore.Controllers
         private readonly RecordStoreContext _context;
         private readonly IConfiguration _configuration;
 
+        private string GenerateSAS(BlobClient blobClient, BlobContainerClient containerClient)
+        {
+            BlobSasBuilder sasBuilder = new()
+            {
+                BlobContainerName = containerClient.Name,
+                BlobName = blobClient.Name,
+                Resource = "b", // "b" indicates a blob
+                StartsOn = DateTimeOffset.UtcNow,
+                ExpiresOn = DateTimeOffset.UtcNow.AddHours(1),
+            };
+
+            sasBuilder.SetPermissions(BlobSasPermissions.Read);
+
+            string sasToken = sasBuilder.ToSasQueryParameters(new StorageSharedKeyCredential("recordstore", _configuration["AzureKey"])).ToString();
+
+            return $"{blobClient.Uri}?{sasToken}";
+        }
+
         public RecordsController(RecordStoreContext context, IConfiguration configuration)
         {
             _context = context;
@@ -30,6 +48,9 @@ namespace RecordStore.Controllers
 
             var records = await _context.Record.ToListAsync();
 
+            BlobServiceClient serviceClient = new(_configuration["AzureConnectionString"]);
+            BlobContainerClient containerClient = serviceClient.GetBlobContainerClient("recordimages");
+
             foreach (var record in records)
             {
                 var artist = await _context.Artist.FindAsync(record.ArtistId);
@@ -39,6 +60,10 @@ namespace RecordStore.Controllers
                     ViewBag.ArtistName = ViewBag.ArtistName ?? new Dictionary<int, string>();
                     ViewBag.ArtistName[record.Id] = artist.Name;
                 }
+
+                BlobClient blobClient = containerClient.GetBlobClient(record.ImagePath);
+                string sasUrl = GenerateSAS(blobClient, containerClient);
+                record.ImagePath = sasUrl;
             }
 
             return View(records);
@@ -85,30 +110,14 @@ namespace RecordStore.Controllers
             {
                 BlobServiceClient serviceClient = new(_configuration["AzureConnectionString"]);
                 BlobContainerClient containerClient = serviceClient.GetBlobContainerClient("recordimages");
-
-                var fileName = Guid.NewGuid().ToString() + Path.GetExtension(@record.Image.FileName);
-                BlobClient blobClient = containerClient.GetBlobClient(fileName);
-                BlobSasBuilder sasBuilder = new()
-                {
-                    BlobContainerName = containerClient.Name,
-                    BlobName = blobClient.Name,
-                    Resource = "b", // "b" indicates a blob
-                    StartsOn = DateTimeOffset.UtcNow,
-                    ExpiresOn = DateTimeOffset.UtcNow.AddHours(1),
-                };
-
-                sasBuilder.SetPermissions(BlobSasPermissions.Read); // Set the desired permissions
-
-                string sasToken = sasBuilder.ToSasQueryParameters(new StorageSharedKeyCredential("recordstore", _configuration["AzureKey"])).ToString();
-
-                // Construct SAS URL
-                string sasUrl = $"{blobClient.Uri}?{sasToken}";
-                record.ImagePath = sasUrl;
+                BlobClient blobClient = containerClient.GetBlobClient(record.Image.FileName);
 
                 using (var stream = @record.Image.OpenReadStream())
                 {
                     await blobClient.UploadAsync(stream, true);
                 }
+
+                record.ImagePath = record.Image.FileName;
 
                 _context.Add(@record);
                 await _context.SaveChangesAsync();
