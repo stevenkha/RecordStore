@@ -45,6 +45,7 @@ namespace RecordStore.Models
                 Record timely = new()
                 {
                     Title = "Timely!!",
+                    ImagePath = "Timely!!.jpg",
                     ReleaseDate = new DateTime(1983, 12, 5),
                     ArtistId = anri.Id,
                     Condition = Condition.G
@@ -53,6 +54,7 @@ namespace RecordStore.Models
                 Record RideOnTime = new()
                 {
                     Title = "Ride On Time",
+                    ImagePath = "RideOnTime.jpg",
                     ReleaseDate = new DateTime(1980, 9, 19),
                     ArtistId = tats.Id,
                     Condition = Condition.VGPlus

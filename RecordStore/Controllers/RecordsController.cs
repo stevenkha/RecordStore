@@ -38,6 +38,7 @@ namespace RecordStore.Controllers
         }
 
         // GET: Records
+        [ResponseCache(Duration = 604800)]
         public async Task<IActionResult> Index()
         {
 
