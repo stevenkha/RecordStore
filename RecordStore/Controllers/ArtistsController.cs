@@ -95,9 +95,34 @@ namespace RecordStore.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Image,Name,Bio")] Artist artist)
         {
-            if (ModelState.IsValid)
+            if (artist.Image != null)
             {
-                _context.Add(artist);
+                long maxFileSize = 500 * 1024;
+
+                if (artist.Image.Length > maxFileSize)
+                {
+                    ModelState.AddModelError("Image", "The uploaded image exceeds the maximum size 500KB");
+                    return View(@artist);
+                }
+            }
+
+            if (ModelState.IsValid)
+            { 
+                BlobServiceClient serviceClient = new(_configuration["AzureConnectionString"]);
+                BlobContainerClient containerClient = serviceClient.GetBlobContainerClient("artistimages");
+
+                string fileName = Guid.NewGuid().ToString();
+
+                BlobClient blobClient = containerClient.GetBlobClient(fileName);
+
+                using (var stream = @artist.Image.OpenReadStream())
+                {
+                    await blobClient.UploadAsync(stream, true);
+                }
+
+                artist.ImagePath = fileName;
+
+                _context.Add(@artist);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }

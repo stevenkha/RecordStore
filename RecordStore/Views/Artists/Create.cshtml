@@ -10,7 +10,7 @@
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Create">
+        <form asp-action="Create" method="POST" enctype=multipart/form-data>
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div id="imagePreview" class="image-preview">
                 <h3>Image Preview:</h3>
