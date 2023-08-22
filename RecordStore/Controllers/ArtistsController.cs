@@ -38,6 +38,7 @@ namespace RecordStore.Controllers
         }
 
         // GET: Artists
+        // TODO: caching for images
         public async Task<IActionResult> Index()
         {
 
