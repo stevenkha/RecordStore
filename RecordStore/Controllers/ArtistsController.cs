@@ -1,9 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using Azure.Storage;
+using Azure.Storage.Blobs;
+using Azure.Storage.Sas;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using RecordStore.Data;
 using RecordStore.Models;
@@ -13,18 +11,56 @@ namespace RecordStore.Controllers
     public class ArtistsController : Controller
     {
         private readonly RecordStoreContext _context;
+        private readonly IConfiguration _configuration;
 
-        public ArtistsController(RecordStoreContext context)
+        public ArtistsController(RecordStoreContext context, IConfiguration configuration)
         {
             _context = context;
+            _configuration = configuration;
+        }
+
+        private string GenerateSAS(BlobClient blobClient, BlobContainerClient containerClient)
+        {
+            BlobSasBuilder sasBuilder = new()
+            {
+                BlobContainerName = containerClient.Name,
+                BlobName = blobClient.Name,
+                Resource = "b", // "b" indicates a blob
+                StartsOn = DateTimeOffset.UtcNow,
+                ExpiresOn = DateTimeOffset.UtcNow.AddHours(1),
+            };
+
+            sasBuilder.SetPermissions(BlobSasPermissions.Read);
+
+            string sasToken = sasBuilder.ToSasQueryParameters(new StorageSharedKeyCredential("recordstore", _configuration["AzureKey"])).ToString();
+
+            return $"{blobClient.Uri}?{sasToken}";
         }
 
         // GET: Artists
         public async Task<IActionResult> Index()
         {
-              return _context.Artist != null ? 
-                          View(await _context.Artist.Include(a => a.Discography).ToListAsync()) :
-                          Problem("Entity set 'RecordStoreContext.Artist'  is null.");
+
+            if (_context.Artist == null)
+            {
+                return Problem("Entity set 'RecordStoreContext.Artist' is null.");
+            }
+
+            BlobServiceClient serviceClient = new(_configuration["AzureConnectionString"]);
+            BlobContainerClient containerClient = serviceClient.GetBlobContainerClient("recordimages");
+
+            var artists = await _context.Artist.Include(a => a.Discography).ToListAsync();
+
+            var blobTasks = artists.Select(artist => {
+                BlobClient blobClient = containerClient.GetBlobClient(artist.ImagePath);
+                string sasUrl = GenerateSAS(blobClient, containerClient);
+                artist.ImagePath = sasUrl;
+                return Task.CompletedTask;
+            });
+
+            await Task.WhenAll(blobTasks);
+
+            return View(artists);
         }
 
         // GET: Artists/Details/5
