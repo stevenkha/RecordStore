@@ -38,7 +38,7 @@ namespace RecordStore.Controllers
         }
 
         // GET: Records
-        [ResponseCache(Duration = 604800)] // 1 week
+        // TODO: Implement caching
         public async Task<IActionResult> Index()
         {
 
@@ -61,11 +61,16 @@ namespace RecordStore.Controllers
                     ViewBag.ArtistName = ViewBag.ArtistName ?? new Dictionary<int, string>();
                     ViewBag.ArtistName[record.Id] = artist.Name;
                 }
+            }
 
+            var blobTasks = records.Select(record => {
                 BlobClient blobClient = containerClient.GetBlobClient(record.ImagePath);
                 string sasUrl = GenerateSAS(blobClient, containerClient);
                 record.ImagePath = sasUrl;
-            }
+                return Task.CompletedTask;
+            });
+
+            await Task.WhenAll(blobTasks);
 
             return View(records);
         }
