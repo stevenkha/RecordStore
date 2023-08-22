@@ -60,7 +60,6 @@ namespace RecordStore.Controllers
             });
 
             await Task.WhenAll(blobTasks);
-
             return View(artists);
         }
 

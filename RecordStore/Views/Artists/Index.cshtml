@@ -29,7 +29,7 @@
     {
         <tr>
             <td class="align-middle">
-                <img class="squre" src="@item.ImagePath" alt="@item.Name" style="max-width: 150px">
+                <img src="@item.ImagePath" alt="@item.Name" style="max-width: 150px">
             </td>
             <td class="align-middle">
                 @Html.DisplayFor(modelItem => item.Name)
@@ -40,10 +40,12 @@
                     @Html.DisplayFor(modelItem => record.Title)
                 }
             </td>
-            <td class="align-middle right-align-cell">
-                <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-outline-primary btn-spacing"><i class="bi bi-pencil-square"></i> Edit</a>
-                <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-outline-info btn-spacing"><i class="bi bi-eye"></i> Details</a>
-                <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger btn-spacing"><i class="bi bi-trash"></i> Delete</a>
+            <td class="align-middle ">
+                <div class="right-align-cell">
+                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-outline-primary btn-spacing"><i class="bi bi-pencil-square"></i> Edit</a>
+                    <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-outline-info btn-spacing"><i class="bi bi-eye"></i> Details</a>
+                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger btn-spacing"><i class="bi bi-trash"></i> Delete</a>
+                </div>
             </td>
         </tr>
     }
