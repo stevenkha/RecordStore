@@ -62,8 +62,7 @@ namespace RecordStore.Controllers
                     {
                         BlobServiceClient serviceClient = new(_configuration["AzureConnectionString"]);
                         BlobContainerClient containerClient = serviceClient.GetBlobContainerClient("artistimages");
-                        string fileName = Guid.NewGuid().ToString();
-                        BlobClient blobClient = containerClient.GetBlobClient(fileName);
+                        BlobClient blobClient = containerClient.GetBlobClient(Guid.NewGuid().ToString());
                         string newSasUrl = GenerateSAS(blobClient, containerClient);
                         artist.ImagePath = newSasUrl;
 
@@ -123,8 +122,7 @@ namespace RecordStore.Controllers
             { 
                 BlobServiceClient serviceClient = new(_configuration["AzureConnectionString"]);
                 BlobContainerClient containerClient = serviceClient.GetBlobContainerClient("artistimages");
-                string fileName = Guid.NewGuid().ToString();
-                BlobClient blobClient = containerClient.GetBlobClient(fileName);
+                BlobClient blobClient = containerClient.GetBlobClient(Guid.NewGuid().ToString());
 
                 string sasURL = GenerateSAS(blobClient, containerClient);
 

@@ -49,9 +49,6 @@ namespace RecordStore.Controllers
 
             var records = await _context.Record.ToListAsync();
 
-            BlobServiceClient serviceClient = new(_configuration["AzureConnectionString"]);
-            BlobContainerClient containerClient = serviceClient.GetBlobContainerClient("recordimages");
-
             foreach (var record in records)
             {
                 var artist = await _context.Artist.FindAsync(record.ArtistId);
@@ -61,16 +58,29 @@ namespace RecordStore.Controllers
                     ViewBag.ArtistName = ViewBag.ArtistName ?? new Dictionary<int, string>();
                     ViewBag.ArtistName[record.Id] = artist.Name;
                 }
+
+                // check for expired SAS urls
+                Uri uri = new(record.ImagePath);
+                var queryParams = System.Web.HttpUtility.ParseQueryString(uri.Query);
+                if (queryParams["se"] != null)
+                {
+                    DateTime expiryTime = DateTime.Parse(queryParams["se"]);
+                    DateTimeOffset currentTime = DateTimeOffset.UtcNow;
+
+                    if (expiryTime <= currentTime)
+                    {
+                        BlobServiceClient serviceClient = new(_configuration["AzureConnectionString"]);
+                        BlobContainerClient containerClient = serviceClient.GetBlobContainerClient("artistimages");
+                        BlobClient blobClient = containerClient.GetBlobClient(Guid.NewGuid().ToString());
+
+                        string newSasUrl = GenerateSAS(blobClient, containerClient);
+                        record.ImagePath = newSasUrl;
+
+                        _context.Entry(record).State = EntityState.Modified;
+                        await _context.SaveChangesAsync();
+                    }
+                }
             }
-
-            var blobTasks = records.Select(record => {
-                BlobClient blobClient = containerClient.GetBlobClient(record.ImagePath);
-                string sasUrl = GenerateSAS(blobClient, containerClient);
-                record.ImagePath = sasUrl;
-                return Task.CompletedTask;
-            });
-
-            await Task.WhenAll(blobTasks);
 
             return View(records);
         }
@@ -127,17 +137,16 @@ namespace RecordStore.Controllers
             {
                 BlobServiceClient serviceClient = new(_configuration["AzureConnectionString"]);
                 BlobContainerClient containerClient = serviceClient.GetBlobContainerClient("recordimages");
+                BlobClient blobClient = containerClient.GetBlobClient(Guid.NewGuid().ToString());
 
-                string fileName = Guid.NewGuid().ToString();
-
-                BlobClient blobClient = containerClient.GetBlobClient(fileName);
+                string sasURL = GenerateSAS(blobClient, containerClient);
 
                 using (var stream = @record.Image.OpenReadStream())
                 {
                     await blobClient.UploadAsync(stream, true);
                 }
 
-                record.ImagePath = fileName;
+                record.ImagePath = sasURL;
 
                 _context.Add(@record);
                 await _context.SaveChangesAsync();
