@@ -47,7 +47,7 @@ namespace RecordStore.Controllers
             }
 
             BlobServiceClient serviceClient = new(_configuration["AzureConnectionString"]);
-            BlobContainerClient containerClient = serviceClient.GetBlobContainerClient("recordimages");
+            BlobContainerClient containerClient = serviceClient.GetBlobContainerClient("artistimages");
 
             var artists = await _context.Artist.Include(a => a.Discography).ToListAsync();
 
