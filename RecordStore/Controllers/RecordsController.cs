@@ -38,7 +38,7 @@ namespace RecordStore.Controllers
         }
 
         // GET: Records
-        [ResponseCache(Duration = 604800)]
+        [ResponseCache(Duration = 604800)] // 1 week
         public async Task<IActionResult> Index()
         {
 
@@ -111,14 +111,17 @@ namespace RecordStore.Controllers
             {
                 BlobServiceClient serviceClient = new(_configuration["AzureConnectionString"]);
                 BlobContainerClient containerClient = serviceClient.GetBlobContainerClient("recordimages");
-                BlobClient blobClient = containerClient.GetBlobClient(record.Image.FileName);
+
+                string fileName = Guid.NewGuid().ToString();
+
+                BlobClient blobClient = containerClient.GetBlobClient(fileName);
 
                 using (var stream = @record.Image.OpenReadStream())
                 {
                     await blobClient.UploadAsync(stream, true);
                 }
 
-                record.ImagePath = record.Image.FileName;
+                record.ImagePath = fileName;
 
                 _context.Add(@record);
                 await _context.SaveChangesAsync();
