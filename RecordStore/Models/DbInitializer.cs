@@ -23,6 +23,7 @@ namespace RecordStore.Models
                 Artist anri = new()
                 {
                     Name = "Anri",
+                    ImagePath = "Anri.jpg",
                     Bio = bios["Anri"]["Bio"].ToString(),
                     Discography = new List<Record>()
                 };
@@ -30,6 +31,7 @@ namespace RecordStore.Models
                 Artist tats = new()
                 {
                     Name = "Tatsuro Yamashita",
+                    ImagePath = "Tatsuro_Yamashita.jpg",
                     Bio = bios["Tatsuro Yamashita"]["Bio"].ToString(),
                     Discography = new List<Record>()
                 };
