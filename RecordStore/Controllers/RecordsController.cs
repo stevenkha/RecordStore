@@ -107,6 +107,17 @@ namespace RecordStore.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Image,Title,ReleaseDate,ArtistId,Condition")] Record @record)
         {
+            if (record.Image != null)
+            {
+                long maxFileSize = 500 * 1024;
+
+                if (record.Image.Length > maxFileSize)
+                {
+                    ModelState.AddModelError("Image", "The uploaded image exceeds the maximum size 500KB");
+                    return View(@record);
+                }
+            }
+
             if (ModelState.IsValid)
             {
                 BlobServiceClient serviceClient = new(_configuration["AzureConnectionString"]);
