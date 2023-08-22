@@ -41,25 +41,38 @@ namespace RecordStore.Controllers
         // TODO: caching for images
         public async Task<IActionResult> Index()
         {
-
             if (_context.Artist == null)
             {
                 return Problem("Entity set 'RecordStoreContext.Artist' is null.");
             }
 
-            BlobServiceClient serviceClient = new(_configuration["AzureConnectionString"]);
-            BlobContainerClient containerClient = serviceClient.GetBlobContainerClient("artistimages");
-
             var artists = await _context.Artist.Include(a => a.Discography).ToListAsync();
+            
+            foreach (Artist artist in artists)
+            {
+                // check for expired SAS urls
+                Uri uri = new(artist.ImagePath);
+                var queryParams = System.Web.HttpUtility.ParseQueryString(uri.Query);
+                if (queryParams["se"] != null)
+                {
+                    DateTime expiryTime = DateTime.Parse(queryParams["se"]);
+                    DateTimeOffset currentTime = DateTimeOffset.UtcNow;
 
-            var blobTasks = artists.Select(artist => {
-                BlobClient blobClient = containerClient.GetBlobClient(artist.ImagePath);
-                string sasUrl = GenerateSAS(blobClient, containerClient);
-                artist.ImagePath = sasUrl;
-                return Task.CompletedTask;
-            });
+                    if (expiryTime <= currentTime)
+                    {
+                        BlobServiceClient serviceClient = new(_configuration["AzureConnectionString"]);
+                        BlobContainerClient containerClient = serviceClient.GetBlobContainerClient("artistimages");
+                        string fileName = Guid.NewGuid().ToString();
+                        BlobClient blobClient = containerClient.GetBlobClient(fileName);
+                        string newSasUrl = GenerateSAS(blobClient, containerClient);
+                        artist.ImagePath = newSasUrl;
 
-            await Task.WhenAll(blobTasks);
+                        _context.Entry(artist).State = EntityState.Modified;
+                        await _context.SaveChangesAsync();
+                    }
+                }
+            }
+
             return View(artists);
         }
 
@@ -110,17 +123,17 @@ namespace RecordStore.Controllers
             { 
                 BlobServiceClient serviceClient = new(_configuration["AzureConnectionString"]);
                 BlobContainerClient containerClient = serviceClient.GetBlobContainerClient("artistimages");
-
                 string fileName = Guid.NewGuid().ToString();
-
                 BlobClient blobClient = containerClient.GetBlobClient(fileName);
+
+                string sasURL = GenerateSAS(blobClient, containerClient);
 
                 using (var stream = @artist.Image.OpenReadStream())
                 {
                     await blobClient.UploadAsync(stream, true);
                 }
 
-                artist.ImagePath = fileName;
+                artist.ImagePath = sasURL;
 
                 _context.Add(@artist);
                 await _context.SaveChangesAsync();

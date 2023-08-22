@@ -23,7 +23,7 @@ namespace RecordStore.Models
                 Artist anri = new()
                 {
                     Name = "Anri",
-                    ImagePath = "Anri.jpg",
+                    ImagePath = "https://recordstore.blob.core.windows.net/artistimages/104ec2dd-8d04-47f1-897d-f3ea29369239?sv=2023-01-03&st=2023-08-22T22%3A49%3A33Z&se=2023-08-22T23%3A49%3A33Z&sr=b&sp=r&sig=Sj0WAeYJRq%2FwWZcabkH0L%2FWh%2F442vo8fYKzRdCxewYg%3D",
                     Bio = bios["Anri"]["Bio"].ToString(),
                     Discography = new List<Record>()
                 };
@@ -31,7 +31,7 @@ namespace RecordStore.Models
                 Artist tats = new()
                 {
                     Name = "Tatsuro Yamashita",
-                    ImagePath = "Tatsuro_Yamashita.jpg",
+                    ImagePath = "https://recordstore.blob.core.windows.net/artistimages/5a0f7e95-8a17-4cf3-a59a-64f5f0b46ed7?sv=2023-01-03&st=2023-08-22T22%3A45%3A24Z&se=2023-08-22T23%3A45%3A24Z&sr=b&sp=r&sig=Z%2F6Ydmipw0NguEaFXLvcbFSQAHA%2FTBK0ptZ%2BPcLO0yo%3D",
                     Bio = bios["Tatsuro Yamashita"]["Bio"].ToString(),
                     Discography = new List<Record>()
                 };
