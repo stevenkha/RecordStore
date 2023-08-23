@@ -13,11 +13,14 @@ namespace RecordStore.Controllers
     {
         private readonly RecordStoreContext _context;
         private readonly IConfiguration _configuration;
+        private readonly BlobContainerClient _containerClient;
 
         public ArtistsController(RecordStoreContext context, IConfiguration configuration)
         {
             _context = context;
             _configuration = configuration;
+            BlobServiceClient _serviceClient = new BlobServiceClient(_configuration["AzureConnectionString"]);
+            _containerClient = _serviceClient.GetBlobContainerClient("recordimages");
         }
 
         private string GenerateSAS(BlobClient blobClient, BlobContainerClient containerClient)
@@ -63,11 +66,9 @@ namespace RecordStore.Controllers
 
                         if (expiryTime <= currentTime)
                         {
-                            BlobServiceClient serviceClient = new BlobServiceClient(_configuration["AzureConnectionString"]);
-                            BlobContainerClient containerClient = serviceClient.GetBlobContainerClient("recordimages");
-                            BlobClient blobClient = containerClient.GetBlobClient(artist.ImageName);
+                            BlobClient blobClient = _containerClient.GetBlobClient(artist.ImageName);
 
-                            string newSasUrl = GenerateSAS(blobClient, containerClient);
+                            string newSasUrl = GenerateSAS(blobClient, _containerClient);
                             artist.ImagePath = newSasUrl;
 
                             _context.Entry(artist).State = EntityState.Modified;
@@ -125,14 +126,11 @@ namespace RecordStore.Controllers
 
             if (ModelState.IsValid)
             { 
-                BlobServiceClient serviceClient = new(_configuration["AzureConnectionString"]);
-                BlobContainerClient containerClient = serviceClient.GetBlobContainerClient("artistimages");
-
                 string fileName = Guid.NewGuid().ToString();
 
-                BlobClient blobClient = containerClient.GetBlobClient(fileName);
+                BlobClient blobClient = _containerClient.GetBlobClient(fileName);
 
-                string sasURL = GenerateSAS(blobClient, containerClient);
+                string sasURL = GenerateSAS(blobClient, _containerClient);
 
                 using (var stream = @artist.Image.OpenReadStream())
                 {
