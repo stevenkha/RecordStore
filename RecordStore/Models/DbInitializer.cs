@@ -30,6 +30,7 @@ namespace RecordStore.Models
                 {
                     Name = "Anri",
                     ImagePath = Anri,
+                    ImageName = "104ec2dd-8d04-47f1-897d-f3ea29369239",
                     Bio = bios["Anri"]["Bio"].ToString(),
                     Discography = new List<Record>()
                 };
@@ -38,6 +39,7 @@ namespace RecordStore.Models
                 {
                     Name = "Tatsuro Yamashita",
                     ImagePath = Tatsuro,
+                    ImageName = "5a0f7e95-8a17-4cf3-a59a-64f5f0b46ed7",
                     Bio = bios["Tatsuro Yamashita"]["Bio"].ToString(),
                     Discography = new List<Record>()
                 };
@@ -54,6 +56,7 @@ namespace RecordStore.Models
                 {
                     Title = "Timely!!",
                     ImagePath = TimelyUrl,
+                    ImageName = "d9f0c032-9892-49ea-99f6-da3034b10c80",
                     ReleaseDate = new DateTime(1983, 12, 5),
                     ArtistId = anri.Id,
                     Condition = Condition.G
@@ -63,6 +66,7 @@ namespace RecordStore.Models
                 {
                     Title = "Ride On Time",
                     ImagePath = RideOnTimeUrl,
+                    ImageName = "0d3af3a6-a512-4a6e-a26f-67b2aa5b695b",
                     ReleaseDate = new DateTime(1980, 9, 19),
                     ArtistId = tats.Id,
                     Condition = Condition.VGPlus

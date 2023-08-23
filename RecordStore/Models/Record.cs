@@ -14,6 +14,8 @@ namespace RecordStore.Models
 
         public string? ImagePath { get; set; }
 
+        public string ImageName { get; set; } = "";
+
         [Required]
         public string Title { get; set; } = "";
 
