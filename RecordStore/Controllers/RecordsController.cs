@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using RecordStore.Data;
 using RecordStore.Models;
+using System.Globalization;
 
 namespace RecordStore.Controllers
 {
@@ -64,20 +65,23 @@ namespace RecordStore.Controllers
                 var queryParams = System.Web.HttpUtility.ParseQueryString(uri.Query);
                 if (queryParams["se"] != null)
                 {
-                    DateTime expiryTime = DateTime.Parse(queryParams["se"]);
-                    DateTimeOffset currentTime = DateTimeOffset.UtcNow;
-
-                    if (expiryTime <= currentTime)
+                    string expiryTimeString = queryParams["se"];
+                    if (DateTime.TryParseExact(expiryTimeString, "yyyy-MM-ddTHH:mm:ssZ", CultureInfo.InvariantCulture, DateTimeStyles.AdjustToUniversal, out DateTime expiryTime))
                     {
-                        BlobServiceClient serviceClient = new(_configuration["AzureConnectionString"]);
-                        BlobContainerClient containerClient = serviceClient.GetBlobContainerClient("artistimages");
-                        BlobClient blobClient = containerClient.GetBlobClient(Guid.NewGuid().ToString());
+                        DateTime currentTime = DateTime.UtcNow;
 
-                        string newSasUrl = GenerateSAS(blobClient, containerClient);
-                        record.ImagePath = newSasUrl;
+                        if (expiryTime <= currentTime)
+                        {
+                            BlobServiceClient serviceClient = new BlobServiceClient(_configuration["AzureConnectionString"]);
+                            BlobContainerClient containerClient = serviceClient.GetBlobContainerClient("recordimages");
+                            BlobClient blobClient = containerClient.GetBlobClient(record.ImageName);
 
-                        _context.Entry(record).State = EntityState.Modified;
-                        await _context.SaveChangesAsync();
+                            string newSasUrl = GenerateSAS(blobClient, containerClient);
+                            record.ImagePath = newSasUrl;
+
+                            _context.Entry(record).State = EntityState.Modified;
+                            await _context.SaveChangesAsync();
+                        }
                     }
                 }
             }
