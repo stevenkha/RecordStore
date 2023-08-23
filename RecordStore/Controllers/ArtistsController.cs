@@ -27,8 +27,8 @@ namespace RecordStore.Controllers
                 BlobContainerName = containerClient.Name,
                 BlobName = blobClient.Name,
                 Resource = "b", // "b" indicates a blob
-                StartsOn = DateTimeOffset.UtcNow,
-                ExpiresOn = DateTimeOffset.UtcNow.AddHours(1),
+                StartsOn = DateTime.UtcNow,
+                ExpiresOn = DateTime.UtcNow.AddHours(1),
             };
 
             sasBuilder.SetPermissions(BlobSasPermissions.Read);
