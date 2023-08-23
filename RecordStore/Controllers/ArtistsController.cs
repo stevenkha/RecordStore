@@ -20,7 +20,7 @@ namespace RecordStore.Controllers
             _context = context;
             _configuration = configuration;
             BlobServiceClient _serviceClient = new BlobServiceClient(_configuration["AzureConnectionString"]);
-            _containerClient = _serviceClient.GetBlobContainerClient("recordimages");
+            _containerClient = _serviceClient.GetBlobContainerClient("artistimages");
         }
 
         private string GenerateSAS(BlobClient blobClient, BlobContainerClient containerClient)
