@@ -19,7 +19,7 @@ namespace RecordStore.Controllers
         {
             _context = context;
             _configuration = configuration;
-            BlobServiceClient _serviceClient = new BlobServiceClient(_configuration["AzureConnectionString"]);
+            BlobServiceClient _serviceClient = new(_configuration["AzureConnectionString"]);
             _containerClient = _serviceClient.GetBlobContainerClient("artistimages");
         }
 
